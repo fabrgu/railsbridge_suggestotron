@@ -72,8 +72,14 @@ class TopicsController < ApplicationController
   # DELETE /votes
   def downvote
     @topic = Topic.find(params[:id])
-    @topic.votes.last.destroy if @topic.votes.count > 0
-    redirect_to(topics_path)
+    if @topic.votes.count > 0
+      @topic.votes.last.destroy
+      redirect_to(topics_path)
+    else
+      respond_to do |format|
+        format.html { redirect_to topics_url, notice: 'Topic has already been downvoted to 0.' }
+      end
+    end
   end
 
   private
